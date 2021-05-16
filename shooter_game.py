@@ -9,7 +9,7 @@ class GameSprite(sprite.Sprite):
         self.image = transform.scale(image.load(player_image), (w, h))
         self.speed = player_speed
         self.speed_x = player_speed
-        self.speed_y = player_speed
+        self.speed_y = int(player_speed/2)
         # каждый спрайт должен хранить свойство rect - прямоугольник, в который он вписан
         self.rect = self.image.get_rect()
         self.rect.x = player_x
@@ -37,6 +37,11 @@ class Ball(GameSprite):
     def update(self):
         self.rect.x+=self.speed_x
         self.rect.y+=self.speed_y
+        if self.rect.y<1 or self.rect.y>549:
+            self.speed_y*=-1
+        if sprite.collide_rect(ball, raket1) or sprite.collide_rect(ball, raket2):
+            self.speed_x*=-1
+            pong.play()
 
 #Игровая сцена:
 bg = (randint(0,255),randint(0,255),randint(0,255))
@@ -45,6 +50,8 @@ display.set_caption("PingPong")
 window.fill(bg)
 
 #переменные
+fon_music = 'Krovostok.ogg'
+pong_sound = 'ооо.ogg'
 finish = False
 run = True
 clock = time.Clock()
@@ -54,13 +61,13 @@ ball = 'tennis_PNG10393.png'
 
 raket1 = Player1(raket_image, 15, 150, 10, 250, 5)
 raket2 = Player2(raket_image, 15, 150, 1175, 250, 5)
-ball = Ball(ball, 50, 50, 575, 275, 5)
+ball = Ball(ball, 50, 50, 575, 275, 8)
 
 #музыка
-'''mixer.init()
-mixer.music.load('space.ogg')
+mixer.init()
+mixer.music.load(fon_music)
 mixer.music.play()
-shot = mixer.Sound('fire.ogg')'''
+pong = mixer.Sound(pong_sound)
 #шрифты
 '''font.init()
 win = font.SysFont('Arial', 70).render('YOU WIN', 1, (0,255,0))
