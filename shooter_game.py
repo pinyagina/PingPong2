@@ -8,6 +8,8 @@ class GameSprite(sprite.Sprite):
         # каждый спрайт должен хранить свойство image - изображение
         self.image = transform.scale(image.load(player_image), (w, h))
         self.speed = player_speed
+        self.speed_x = player_speed
+        self.speed_y = player_speed
         # каждый спрайт должен хранить свойство rect - прямоугольник, в который он вписан
         self.rect = self.image.get_rect()
         self.rect.x = player_x
@@ -28,8 +30,13 @@ class Player2(GameSprite):
         key_pressed = key.get_pressed()
         if key_pressed[K_UP] and self.rect.x>0:
             self.rect.y-=self.speed 
-        if key_pressed[K_DOWN] and self.rect.x<600:
+        if key_pressed[K_DOWN] and self.rect.x>600:
             self.rect.y+=self.speed 
+
+class Ball(GameSprite):
+    def update(self):
+        self.rect.x+=self.speed_x
+        self.rect.y+=self.speed_y
 
 #Игровая сцена:
 bg = (randint(0,255),randint(0,255),randint(0,255))
@@ -41,12 +48,13 @@ window.fill(bg)
 finish = False
 run = True
 clock = time.Clock()
-raket_image = 'rocket.jpg'
-
+raket_image = 'rocket.png'
+ball = 'tennis_PNG10393.png'
 #создание спрайтов
 
-raket1 = Player1('rocket.jpg', 15, 150, 10, 250, 5)
-raket2 = Player2('rocket.jpg', 15, 150, 1190, 250, 5)
+raket1 = Player1(raket_image, 15, 150, 10, 250, 5)
+raket2 = Player2(raket_image, 15, 150, 1175, 250, 5)
+ball = Ball(ball, 50, 50, 575, 275, 5)
 
 #музыка
 '''mixer.init()
@@ -69,5 +77,7 @@ while run:
         raket1.reset()
         raket2.update()
         raket2.reset()
-        display.update()
-    clock.tick(60)
+        ball.update()
+        ball.reset()
+    display.update()
+    clock.tick(60) 
